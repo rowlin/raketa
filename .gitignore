@@ -1,0 +1,4 @@
+/api/vendor/
+/api/.phpunit.result.cache
+/api/composer.lock
+./.idea

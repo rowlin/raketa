@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-center{
+            text-align: center;
+        }
+
+        #table {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            padding-top: 50px;
+            width: 420px;
+        }
+
+        #table td, #table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #table tr:nth-child(even){background-color: #f2f2f2;}
+
+        #table tr:hover {background-color: #ddd;}
+
+        #table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+    <title>TZ</title>
+</head>
+<body>
+<table id="table" class="center">
+    <thead>
+    <tr>
+        <th>
+            Key
+        </th>
+        <th>
+            Value
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+
+    </thead>
+    <tbody id="printData">
+
+
+    </tbody>
+</table>
+
+</body>
+<script type="text/javascript">
+
+    async function getData() {
+        const response = await fetch('http://localhost:8081/api/redis');
+        var data = await response.json();
+        show(data);
+    }
+
+    async function deleteByKey(key){
+        const response = await fetch('http://localhost:8081/api/redis/' + key , { method: 'DELETE'});
+        var data = await response.json();
+        if(data.status){
+            getData();
+        }
+    }
+
+    function show(data) {
+        let tab ='';
+        for (const [key, value] of Object.entries(data.data)) {
+            tab += `<tr>
+                <td>${key} </td>
+                <td>${value}</td>
+                <td class="text-center"><button class="btn" onclick="deleteByKey('`+ key +`')">Delete</button></td>
+        </tr>`;
+        }
+        document.getElementById("printData").innerHTML = tab;
+    }
+    window.onload = function() {
+        getData();
+    };
+</script>
+
+</html>
